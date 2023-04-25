@@ -1,0 +1,57 @@
+<?php require('template/header.phtml'); ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body class="container-fluid">
+<br><br>
+<blockquote>This is an auction site yard sale for customers looking to get some rubbish out of their homes</blockquote>
+<br>
+<!--Form containing the search functions -->
+<form method="post">
+    <div id="searchBar">
+    <input type="text" id="sText" placeholder="Search Database..."name="sText" onkeyup="showHint(this.value)">
+    <button id ="sButton" type="submit" name="sButton" class="btn btn-outline-dark">Search</button>
+    </div>
+    <br>
+    <ul id="txtHint"></ul>
+</form>
+    <br>
+<script>
+    //This function shows the hints for the live search
+    function showHint(str){
+        if (str.length == 0){
+            document.getElementById("txtHint").innerHTML = "";
+            return "";
+        }
+        else {
+            var xmlhttp = new XMLHttpRequest();
+
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200){
+                    var uic = document.getElementById("txtHint")
+                    uic.innerHTML = "";
+                    let txt = JSON.parse(this.responseText);
+
+                    txt.forEach(function (obj) {
+                        let container = document.createElement("li");
+                        container.innerHTML= '<a id="subhead" href="showItem.php?id=' + obj._itemId + '">' + obj._itemName + '</a>' + ' ' + '<img src ="images/' + obj._images + '" width="80px" height="50px">';
+                        uic.appendChild(container);
+                    })
+                }
+            };
+            xmlhttp.open("GET", "livesearch.php?q=" + str + "&token=<?php echo $view->token?>" , true);
+            xmlhttp.send();
+        }
+    }
+</script>
+</body>
+</html>
+
+<?php require('template/footer.phtml'); ?>

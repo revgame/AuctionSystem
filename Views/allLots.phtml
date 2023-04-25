@@ -1,0 +1,51 @@
+<?php require('template/header.phtml'); ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body class="container-fluid">
+
+<!--Table for displaying lot information-->
+<table class="table table-dark">
+    <thead class="shadow-lg thead-dark">
+    <tr>
+        <th>LOT</th><th>TITLE</th><th>DESCRIPTION</th><th>IMAGE</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($view->itemData as $itemData) echo '
+        <form method="post">
+        <tr> <td>' . $itemData->getItemID() . '</td>
+        <input type="hidden" name="lotId" value="' . $itemData->getItemID() . '">
+                   <td>' . $itemData->getItemName() . '</td>
+        <input type="hidden" name="lotName" value="' . $itemData->getItemName() . '">
+                   <td>' . $itemData->getItemDescription() . '</td>
+        <input type="hidden" name="lotDes" value="' . $itemData->getItemDescription() . '">   
+                   <td>' . '<img src="images/' . $itemData->getImage(1) . ' " style="width:80%"alt="no picture" />' . '</td>
+        <input type="hidden" name="lotImage" value="' . $itemData->getImage(1) . '">               
+                   <td><button id="button1" name="button1" class="btn btn-outline-dark"><a href="showItem.php?id='. $itemData->getItemID() .'">View Item</a></button></td></tr> </form>';
+    ?>
+    </tbody>
+</table>
+
+<!--Pagination-->
+<ul class="breadcrumb">
+    <li><a href="?pageno=1">First</a></li>
+    <li class="<?php if($view->pageno <= 1){ echo 'disabled'; } ?>">
+        <a href="<?php if($view->pageno <= 1){ echo '#'; } else { echo "?pageno=".($view->pageno - 1); } ?>">Prev</a>
+    </li>
+    <li class="<?php if($view->pageno >= $view->total_pages){ echo 'disabled'; } ?>">
+        <a href="<?php if($view->pageno >= $view->total_pages){ echo '#'; } else { echo "?pageno=".($view->pageno + 1); } ?>">Next</a>
+    </li>
+    <li><a href="?pageno=<?php echo $view->total_pages; ?>">Last</a></li>
+</ul>
+</body>
+</html>
+
+<?php require('template/footer.phtml'); ?>

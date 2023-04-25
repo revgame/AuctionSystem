@@ -1,0 +1,65 @@
+<?php require('template/header.phtml'); ?>
+<!DOCTYPE html>
+<html lang="en">
+
+<!--This is the header for the bid list-->t
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body class="container-fluid">
+
+<!--The statement below makes sure that user is logged in and has data in the my database-->
+<?php if (isset($_SESSION['loggedIn']) && isset($view->bidData)): ?>
+<br><br>
+
+    <!--Counts the number of bids a user has-->
+    <p>(<?php if (isset($view->countBid)) echo $view->countBid ?>) bid items</p>
+
+    <!--Table used to display information on bids along with some bootstrap for design purposes-->
+<table class="table table-dark">
+    <thead class="thead-dark">
+    <tr>
+        <th>LOT</th><th>TITLE</th><th>DESCRIPTION</th><th>IMAGE</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php $lot = 1; foreach ($view->itemData as $itemData) { echo '
+        <form method="post">
+        <tr> <td>' . $itemData->getItemID() . '</td>
+        <input type="hidden" id="lotId'.$lot.'" name="lotId" value="' . $itemData->getItemID() . '">
+                   <td>' . $itemData->getItemName() . '</td>
+        <input type="hidden" name="lotName" value="' . $itemData->getItemName() . '">
+                   <td>' . $itemData->getItemDescription() . '</td>
+        <input type="hidden" name="lotDes" value="' . $itemData->getItemDescription() . '">   
+                   <td>' . '<img src="images/' . $itemData->getImage(1) . ' " alt="no picture" />' . '</td>
+        <input type="hidden" name="lotImage"  value="' . $itemData->getImage(1) . '">               
+                   <td><button id="button1" name="button1" class="btn btn-outline-dark"><a href="showItem.php?id='. $itemData->getItemID() .'">View Item</a></button></td>
+                   <td id="status'.$lot.'" name="status" >Not working</td>
+                   </tr> </form>';
+    $lot++;} ?>
+    </tbody>
+</table>
+<?php endif; ?>
+<?php if (isset($view->error)) {echo $view->error;}?>
+
+<!-- Beginning of my script, First script tag is external while the second script tag does internal functions -->
+<script src="js/status.js"></script>
+<script>
+
+    // loop through the tables to get the data.
+    for (let i = 1; i <= <?php echo $view->countBid ?>; i++)
+   {
+        var text1 = document.getElementById("status"+i);
+       var itemId = document.getElementById("lotId"+i).value;
+
+       window.onload = showStatus(itemId, text1);
+ }
+</script>
+</body>
+</html>
+
+<?php require('template/footer.phtml'); ?>

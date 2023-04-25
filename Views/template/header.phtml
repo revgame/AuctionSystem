@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--What is the purpose of all these meta values -->
+    <meta charset="x-UTF-16LE-BOM">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Rev's Saleroom" content="">
+    <meta name="Rowland Ndoma-Egba" content="">
+    <link rel="stylesheet" href="../bootstrap/css/style.css">
+
+    <!--Title and Header -->
+    <title>Temple</title>
+</head>
+<nav>
+<h2 class="d-flex p-5 bg-primary"><?php  echo $view->pageTitle ?></h2>
+    <ul id="mainHeader">
+    <li id="home">
+        <a id="subhead" href="index.php">Home</a>
+    </li>
+
+    <li id="lots">
+        <a id="subhead" href="allLots.php">Lots</a>
+    </li>
+
+    <li id="bidList" name="bidList"><a id="subhead" href="bidList.php">My Bids
+        <span class="badge" id="bidCount" style="background-color: red"></span>
+        </a></li>
+
+    <li id="AuctionList" name="AuctionList"><a id="subhead" href="auction.php">Auctions</a></li>
+    </ul>
+
+    <!--Which form for the buttons -->
+<form method="post">
+    <?php if (!isset($_SESSION['loggedIn'])) : ?>
+        <button id="login"
+                type="submit"
+                name="loginButton"><a href="login.php">Login</a>
+        </button>
+        <button id="signIn"
+                type="submit"
+                name="registerButton"><a href="register.php">Sign In</a>
+        </button>
+    <?php endif; ?>
+    <div id="log">
+    <?php if (isset($_SESSION['loggedIn'])) : ?>
+        <p id="userName">Welcome <?php  echo $_SESSION['name'] ?></p>
+        <button id="logout"
+                type="submit"
+                name="logoutB">Logout
+        </button>
+</form>
+</nav>
+</div>
+    <?php endif; ?>
+    <script>
+        //method to count the bids for a user
+        function countBid() {
+            var xhttp;
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                document.getElementById("bidCount").innerHTML = this.responseText;
+            }
+            xhttp.open("GET", "countBid.php", true);
+            xhttp.send();
+        }
+
+        console.log(countBid());
+    </script>
+<br>
+</html>
+

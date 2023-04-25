@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap/css/style.css">
+
+</head>
+<body class="container-fluid">
+<h2>Login</h2>
+
+<!--Form containing input fields for login-->
+<form action="login.php" method="post" >
+<div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" name="email" class="form-control" placeholder="Enter email address">
+    <br>
+    <label for="password">Password</label>
+    <input type="password" name="pwd" class="form-control" placeholder="Enter password" >
+    <br><br>
+    <button type="submit" name="loginButton" class="btn btn-outline-dark">GET IN</button>
+    <p><a href="register.php">Haven't signed in yet?</a></p>
+    <p class="bg-danger text-white"><?php if(isset($view->error)) echo $view->error ?> </p>
+    <button id="logBack" name="logBack" class="btn btn-outline-dark"><a href="index.php">Back to Home</a></button>
+</div>
+</form>
+</body>
+</html>
+<?php require('template/footer.phtml'); ?>

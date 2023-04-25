@@ -1,0 +1,55 @@
+<?php require('template/header.phtml'); ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body class="container-fluid">
+<table class="table table-dark">
+    <thead>
+    <tr>
+        <th>ID</th><th>AUCTION NAME</th><th>POSTING USER</th><th>START DATE</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php $no = 1; foreach ($view->auctionData as $auctionData) { echo '
+        <tr> <td>' . $auctionData->getAuctionID() . '</td>
+                   <td>' . $auctionData->getAuctionName() . '</td>
+                   <td>' . $auctionData->getPostingUser() . '</td>       
+                   <td>' . $auctionData->getStartDate() . '</td>    
+                   <td><button id="buttonA" name="buttonA" value="'. $auctionData->getAuctionID() .'" onclick="showAuctionItems(this.value)" class="btn btn-outline-dark">View Items</button></td>             
+                 </tr>';
+   $no++;} ?>
+    </tbody>
+</table>
+<br>
+Script to be used in listing all the Auctions
+<br><br>
+<p id="data"></p>
+<script>
+    function showAuctionItems(id) {
+        var xhttp;
+        if (id == "") {
+            document.getElementById("data").innerHTML = "";
+            return;
+        }
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("data").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "ItemsforAuction.php?z=" + id, true);
+        xhttp.send();
+    }
+</script>
+<button id="logBack" name="logBack"><a href="index.php">Back to Home</a></button>
+</body>
+</html>
+
+<?php require('template/footer.phtml'); ?>

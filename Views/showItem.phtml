@@ -1,0 +1,157 @@
+<?php require('template/header.phtml'); ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body class="container-fluid">
+
+<!--Carousel for the images-->
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+    </ol>
+
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner">
+        <div class="item active">
+            <img src="images/<?php echo $view->singleItem->getImage(0) ?>" alt="Item 1">
+        </div>
+
+        <div class="item">
+            <img src="images/<?php echo $view->singleItem->getImage(1) ?>" alt="Item 2">
+        </div>
+    </div>
+
+    <!-- Left and right controls -->
+    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+<br><br>
+<!--Winning Bid-->
+Winning Bid: £<span id="highestBid"></span>
+<br><br>
+<!--Current Bid-->
+Current Bid: £<span id="currentBid"></span>
+<br><br>
+<!--Status of the user-->
+Status: <span id="status"></span>
+<br>
+<?php if (isset($_SESSION['loggedIn']) && $view->timeUp == false) : ?>
+<!--edits the bid for an item-->
+        <br>
+        <label>Edit Bid :</label>
+        <input type="number" id="bidNumber" name="bidNumber" min="<?php echo $view->currentAmount ?>">
+    <button id="bidItem" name="bidItem" onclick="showAlert();document.getElementById('bidNumber').value = '';" class="btn btn-outline-dark">Bid</button>
+        <p><?php if(isset($view->error)) echo $view->error ?> </p>
+<?php endif; ?>
+
+<?php if (!isset($_SESSION['loggedIn'])) : ?>
+    <br>
+    <p>You need to login in before you are allowed to bid for an item</p>
+    <p><?php if(isset($view->error)) echo $view->error ?> </p>
+<?php endif; ?>
+
+<!--Countdown timer-->
+<b>CountDown:</b><p id="time" name="time"></p>
+
+<script src="/js/timer.js"></script>
+<script>
+
+    //Places a bid into the database
+    function placeBid(id, amo) {
+        var xhttp;
+        if (amo == "") {
+            return "disprove";
+        }
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+        }
+        xhttp.open("GET", "placeBid.php?b=" + id + "&d=" + amo, true);
+        xhttp.send();
+    }
+
+    var amo = document.getElementById("bidNumber");
+    var id = <?php echo $_GET['id'] ?>;
+    var placeUserBid = () => placeBid(id, amo.value);
+    document.getElementById('bidItem').addEventListener("click", placeUserBid, true);
+
+
+    //Alert after bid is placed
+    function showAlert()
+    {
+        alert("Bid Has Been Set...");
+    }
+
+    //function to get the highest bidder
+    function highestBid(id){
+        let xhttp;
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("highestBid").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "highestBid.php?a=" + id, true);
+        xhttp.send();
+    }
+
+    highestBid(id);
+    let highest = () => highestBid(id);
+    document.getElementById('bidItem').addEventListener("click", highest, true)
+
+    //Function to get the current bid set by the user
+    function currentBid(id){
+        var xhttp;
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("currentBid").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "currentBid.php?k=" + id, true);
+        xhttp.send();
+    }
+
+    currentBid(id);
+    var current = () => currentBid(id);
+    document.getElementById('bidItem').addEventListener("click", current, true)
+
+    //function to show the bid status for the user
+    function showBidStatus(id) {
+        var xhttp;
+        if (id == "") {
+            document.getElementById("status").innerHTML = "Rev";
+            return;
+        }
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById('status').innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "status.php?f=" + id, true);
+        xhttp.send();
+    }
+
+    showBidStatus(id);
+    var status = () => showBidStatus(id);
+    document.getElementById('bidItem').addEventListener("click", status, true)
+</script>
+</body>
+<button><a href="allLots.php">Back</a></button>
+</html>
+<?php require('template/footer.phtml'); ?>
